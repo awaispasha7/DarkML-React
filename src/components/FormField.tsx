@@ -10,6 +10,9 @@ interface FormFieldProps {
   required?: boolean;
   placeholder?: string;
   options?: { value: string; label: string }[];
+  min?: string | number;
+  step?: string | number;
+  max?: string | number;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -22,6 +25,9 @@ export const FormField: React.FC<FormFieldProps> = ({
   required = false,
   placeholder,
   options,
+  min,
+  step,
+  max,
 }) => {
   const renderInput = () => {
     if (type === 'textarea') {
@@ -69,6 +75,9 @@ export const FormField: React.FC<FormFieldProps> = ({
         onChange={onChange}
         required={required}
         placeholder={placeholder}
+        min={min}
+        step={step}
+        max={max}
       />
     );
   };

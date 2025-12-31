@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // import { apiService } from '@/services/api'; // Uncomment when API endpoints are ready
 
 interface ParentStats {
@@ -9,6 +10,7 @@ interface ParentStats {
 }
 
 export const ParentDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState<ParentStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -71,9 +73,18 @@ export const ParentDashboard: React.FC = () => {
       <div className="content-section">
         <h2 className="section-title">Quick Actions</h2>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <button className="btn btn-primary">View Children</button>
-          <button className="btn btn-primary">View Reports</button>
-          <button className="btn btn-primary">Contact Teachers</button>
+          <button 
+            className="btn btn-primary"
+            onClick={() => navigate('/app/parent/children')}
+          >
+            View Children
+          </button>
+          <button 
+            className="btn btn-primary"
+            onClick={() => navigate('/app/parent/progress')}
+          >
+            View Progress
+          </button>
         </div>
       </div>
     </div>

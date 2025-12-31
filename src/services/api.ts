@@ -8,7 +8,7 @@ class ApiService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: API_BASE_URL,
+      baseURL: `${API_BASE_URL}/api`,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -29,14 +29,18 @@ class ApiService {
     );
 
     // Response interceptor to handle errors
+    // Note: We don't redirect on 401 here - let components handle it with dummy data
     this.api.interceptors.response.use(
       (response) => response,
       (error: AxiosError<ApiError>) => {
-        if (error.response?.status === 401) {
-          // Unauthorized - clear token and redirect to login
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('user');
-          window.location.href = '/login';
+        // Only redirect to login if we're not in dev mode and it's a real auth error
+        // Otherwise, let components handle errors and use dummy data
+        if (error.response?.status === 401 && !import.meta.env.DEV) {
+          const token = localStorage.getItem('access_token');
+          if (!token) {
+            // No token at all - might want to redirect
+            // But for now, let components handle it
+          }
         }
         return Promise.reject(error);
       }
@@ -44,28 +48,41 @@ class ApiService {
   }
 
   // Authentication endpoints
-  // Note: Adjust endpoint based on your API documentation at http://3.226.252.253:8000/redoc/
   async login(email: string, password: string): Promise<AuthResponse> {
-    const formData = new FormData();
-    formData.append('username', email);
-    formData.append('password', password);
+    // Try the API endpoint first
+    try {
+      const response = await this.api.post<AuthResponse>('/users/login/', {
+        email,
+        password,
+      });
+      return response.data;
+    } catch (error) {
+      // If API fails, try OAuth2 style endpoint as fallback
+      const formData = new FormData();
+      formData.append('username', email);
+      formData.append('password', password);
 
-    // Common FastAPI OAuth2 endpoint - adjust if your API uses different endpoint
-    const response = await this.api.post<AuthResponse>('/auth/token', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data;
+      const response = await this.api.post<AuthResponse>('/auth/token', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    }
   }
 
   async logout(): Promise<void> {
-    await this.api.post('/auth/logout');
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user');
+    try {
+      await this.api.post('/auth/logout');
+    } catch (error) {
+      // Ignore logout errors
+    } finally {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+    }
   }
 
-  // Generic API methods
+  // Generic API methods with error handling
   async get<T>(endpoint: string): Promise<T> {
     const response = await this.api.get<T>(endpoint);
     return response.data;
@@ -84,6 +101,16 @@ class ApiService {
   async delete<T>(endpoint: string): Promise<T> {
     const response = await this.api.delete<T>(endpoint);
     return response.data;
+  }
+
+  // Helper method to safely call API and return null on error
+  async safeGet<T>(endpoint: string): Promise<T | null> {
+    try {
+      return await this.get<T>(endpoint);
+    } catch (error) {
+      console.warn(`API call failed for ${endpoint}:`, error);
+      return null;
+    }
   }
 }
 

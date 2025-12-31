@@ -1,4 +1,4 @@
-# DarkML Frontend - React Application
+ # DarkML Frontend - React Application
 
 A responsive, secure, and interactive React.js frontend application for the DarkML educational platform, supporting multiple user roles (Admin, Teacher, Student, Parent).
 

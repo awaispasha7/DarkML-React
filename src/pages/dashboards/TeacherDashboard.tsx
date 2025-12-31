@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // import { apiService } from '@/services/api'; // Uncomment when API endpoints are ready
 
 interface TeacherStats {
@@ -9,6 +10,7 @@ interface TeacherStats {
 }
 
 export const TeacherDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState<TeacherStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -71,9 +73,30 @@ export const TeacherDashboard: React.FC = () => {
       <div className="content-section">
         <h2 className="section-title">Quick Actions</h2>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <button className="btn btn-primary">Create Assignment</button>
-          <button className="btn btn-primary">View Classes</button>
-          <button className="btn btn-primary">Grade Submissions</button>
+          <button 
+            className="btn btn-primary"
+            onClick={() => navigate('/app/teacher/assignments')}
+          >
+            Create Assignment
+          </button>
+          <button 
+            className="btn btn-primary"
+            onClick={() => navigate('/app/teacher/classes')}
+          >
+            View Classes
+          </button>
+          <button 
+            className="btn btn-primary"
+            onClick={() => navigate('/app/teacher/grades')}
+          >
+            Grade Submissions
+          </button>
+          <button 
+            className="btn btn-primary"
+            onClick={() => navigate('/app/teacher/create-quiz')}
+          >
+            Create Quiz
+          </button>
         </div>
       </div>
     </div>

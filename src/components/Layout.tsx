@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { Sidebar } from './Sidebar';
 import './Layout.css';
 
 export const Layout: React.FC = () => {
@@ -9,7 +10,7 @@ export const Layout: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const getRoleDisplayName = (role: string) => {
@@ -20,9 +21,14 @@ export const Layout: React.FC = () => {
     <div className="layout">
       <header className="header">
         <div className="header-content">
-          <Link to="/dashboard" className="logo">
-            DarkML
-          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <Link to="/app/dashboard" className="logo">
+              DarkML
+            </Link>
+            <Link to="/" style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', textDecoration: 'none' }}>
+              Home
+            </Link>
+          </div>
           <nav className="nav">
             <div className="user-info">
               <span className="user-name">{user?.name}</span>
@@ -34,9 +40,12 @@ export const Layout: React.FC = () => {
           </nav>
         </div>
       </header>
-      <main className="main-content">
-        <Outlet />
-      </main>
+      <div className="layout-body">
+        <Sidebar />
+        <main className="main-content">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };
