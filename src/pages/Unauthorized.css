@@ -1,0 +1,30 @@
+.unauthorized-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.unauthorized-content {
+  text-align: center;
+}
+
+.unauthorized-title {
+  font-size: 6rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.unauthorized-subtitle {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.unauthorized-message {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
